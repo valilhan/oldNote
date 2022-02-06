@@ -6,30 +6,39 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(br.readLine());
 		while (t-- > 0) {
-			String S[] = br.readLine().trim().split(" ");
-			int n = Integer.parseInt(S[0]);
-			int m = Integer.parseInt(S[1]);
-			String L[] = br.readLine().trim().split(" ");
-			String R[] = br.readLine().trim().split(" ");
-			HashMap<String, Boolean> hm = new HashMap<String, Boolean>();
-			HashMap<String, Boolean> rm = new HashMap<String, Boolean>();
-			for (int i = 0; i < n; i++) {
-				if (hm.get(L[i]) == null) {
-					hm.put(L[i], true);
+			String s = br.readLine().trim();
+			char A[] = s.toCharArray();
+			HashSet<String> ss = new HashSet<String>();
+			for (int i = 0; i < A.length; i++) {
+				ss.add(A[i] + "");
+			}
+			int total = ss.size();
+			HashMap<String, Integer> mp = new HashMap<String, Integer>();
+			int tmp = 0;
+			int min = Integer.MAX_VALUE;
+			int start_indx = 0;
+			for (int end = 0; end < A.length; end++) {
+				if (mp.get(A[end] + "") == null) {
+					mp.put(A[end] + "", 1);
+					tmp++;
+				} else {
+					int c = mp.get(A[end] + "");
+					mp.put(A[end] + "", ++c);
+				}
+				if (tmp == total) {
+					for (int start = start_indx; start <= end; start++) {
+						if (mp.get(A[start] + "") > 1) {
+							int c = mp.get(A[start] + "");
+							mp.put(A[start] + "", --c);
+						} else {
+							start_indx = start;
+							min = Math.min(min, end - start + 1);
+							break;
+						}
+					}
 				}
 			}
-			for (int i = 0; i < m; i++) {
-				if (rm.get(R[i]) == null) {
-					rm.put(R[i], true);
-				}
-			}
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < n; i++) {
-				if (rm.get(L[i]) == null) {
-					sb.append(L[i] + " ");
-				}
-			}
-			System.out.println(sb.toString().trim());
+			System.out.println(min);
 		}
 	}
 }
