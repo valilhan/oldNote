@@ -1,44 +1,45 @@
 import java.util.*;
 import java.io.*;
 
+class cmp implements Comparator<Map.Entry<Integer, Integer>> {
+	@Override
+	public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+		return o1.getKey() - o2.getKey();
+	}
+}
+
 public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(br.readLine());
 		while (t-- > 0) {
-			String s = br.readLine().trim();
-			char A[] = s.toCharArray();
-			HashSet<String> ss = new HashSet<String>();
-			for (int i = 0; i < A.length; i++) {
-				ss.add(A[i] + "");
-			}
-			int total = ss.size();
-			HashMap<String, Integer> mp = new HashMap<String, Integer>();
-			int tmp = 0;
-			int min = Integer.MAX_VALUE;
-			int start_indx = 0;
-			for (int end = 0; end < A.length; end++) {
-				if (mp.get(A[end] + "") == null) {
-					mp.put(A[end] + "", 1);
-					tmp++;
+			String S[] = br.readLine().trim().split(" ");
+			HashMap<Integer, Integer> mp = new HashMap<Integer, Integer>();
+			for (int i = 0; i < S.length; i++) {
+				int value = Integer.parseInt(S[i]);
+				if (mp.get(value) == null) {
+					mp.put(value, 1);
 				} else {
-					int c = mp.get(A[end] + "");
-					mp.put(A[end] + "", ++c);
-				}
-				if (tmp == total) {
-					for (int start = start_indx; start <= end; start++) {
-						if (mp.get(A[start] + "") > 1) {
-							int c = mp.get(A[start] + "");
-							mp.put(A[start] + "", --c);
-						} else {
-							start_indx = start;
-							min = Math.min(min, end - start + 1);
-							break;
-						}
-					}
+					int c = mp.get(value);
+					mp.put(value, ++c);
 				}
 			}
-			System.out.println(min);
+			// all element in the map
+			Set<Map.Entry<Integer, Integer>> ss = mp.entrySet();
+			ArrayList<Map.Entry<Integer, Integer>> arr = new ArrayList<Map.Entry<Integer, Integer>>(ss);
+			Collections.sort(arr, new cmp());
+			Iterator<Map.Entry<Integer, Integer>> index = arr.iterator();
+			StringBuffer ans = new StringBuffer();
+			System.out.println(arr);
+			while (index.hasNext()) {
+				Map.Entry<Integer, Integer> val = index.next();
+				int inner = val.getValue();
+				while (inner > 0) {
+					ans.append(val.getKey() + " ");
+					inner--;
+				}
+			}
+			System.out.println(ans.toString().trim());
 		}
 	}
 }
